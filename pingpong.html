@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body onload="inicializa();Toca(event);" onkeydown="Mexe(event)" onmousemove="MexeORato(event);">
+
+    <div style="width:900px; height:600px; background-color:green;">
+        <audio id="a1" controls style="width: 0px;" preload="auto">
+            <source src="./Blop.mp3">
+        </audio>
+        <p id="pontos" style="font-size: 30px; color:white; margin: left 10px;">10</p>
+
+        <img id="i1" src="./pingpong.png" style="position: absolute; width:100px;">
+        <img src="./raquete.png" id="raquete" style="width: 200px; position:absolute; top:400px;">
+    </div>
+    <script>
+        var x = 0;
+        var aumentox = 1;
+        var y = 0;
+        var aumentoy = 1;
+        var posRaquete = 0;
+        var pontos = 10;
+        var t;
+
+
+        function inicializa() {
+            t = setInterval(function () { actualiza() }, 5);
+        }
+
+        function actualiza() {
+
+            if (x >= 815) {
+                aumentox = -1;
+
+            }
+            if (x <= 0) {
+                aumentox = 1;
+            }
+            if ((y == 310) && (x >= posRaquete - 50) && (x <= posRaquete + 200)) {
+                aumentoy = -1;
+                Toca();
+
+
+
+            }
+            if (y >= 515) {
+                aumentoy = -1;
+                pontos = pontos - 1;
+                document.getElementById('pontos').innerHTML = pontos;
+                if (pontos == 0) {
+                    document.getElementById('pontos').innerHTML = "Game-Over";
+                    clearInterval(t);
+                    document.addEventListener("keydown", reiniciarJogo); //Qdo eu precionar uma tecla ele vai chamar.
+
+
+                    /*setTimeout(function () { //O jogo é iniciado automaticamente apos 2 segundos.
+                        pontos = 10;
+                        document.getElementById('pontos').innerHTML = pontos;
+                    }, 2000);  // Aguarda 2 segundos antes de reiniciar*/
+                }
+            }
+            if (y <= 0) {
+                aumentoy = 1;
+            }
+
+
+
+            x = x + aumentox;
+            y = y + aumentoy;
+            document.getElementById("i1").style.left = x + "px";
+            document.getElementById("i1").style.top = y + "px";
+
+
+        }
+        function Mexe(event) {
+            var key = event.keyCode; //Leitura do que foi pressionado no teclado
+            // document.getElementById("tecla").innerHTML=key;
+            if (key == 82) {  // Tecla R
+                posRaquete = posRaquete + 10;
+
+                document.getElementById("raquete").style.left = posRaquete + "px";
+
+            }
+            if (key == 69) { // Tecla E
+                posRaquete = posRaquete - 10;
+
+                document.getElementById("raquete").style.left = posRaquete + "px";
+
+            }
+
+        }
+
+        function MexeORato(event) {
+            posRaquete = event.clientX - 50;
+            if (posRaquete > 700) return; //para a raquete nao passar o limite da div minha div tem o width de 900 porem a raquete tem o tamanho de 200px 
+
+            document.getElementById("raquete").style.left = posRaquete + "px";
+
+        }
+        function Toca(event) {
+            document.getElementById('a1').pause();
+            document.getElementById('a1').currentTime = 0.2; //0.2 para deixar o som mais sincronizado
+            document.getElementById('a1').play();
+
+        }
+        function reiniciarJogo(event) { //o Jogo so é iniciado quando algum botao do teclado pressionado
+            if (event.keyCode) { // Se qualquer tecla for pressionada
+                pontos = 10; 
+                document.getElementById('pontos').innerHTML = pontos;
+                document.removeEventListener("keydown", reiniciarJogo); // Remove o evento para não duplicar
+                t = setInterval(function () { actualiza() }, 5); // Reinicia o intervalo
+            }
+        }y
+
+
+    </script>
+
+</body>
+
+</html>
